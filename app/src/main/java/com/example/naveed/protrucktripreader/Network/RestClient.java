@@ -18,7 +18,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RestClient {
 
-    private static IApiCaller authRestClient;
+    private static WebCalls authRestClient;
     public static String tokenType="Bearer ";
     public static String tokene="";
     static {
@@ -56,19 +56,17 @@ public class RestClient {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(Constants.BASE_URL).
+                baseUrl(NetworkConstants.BASE_URL).
                 addConverterFactory(GsonConverterFactory.create()).
                 client(httpClient).
                 build();
 
-        authRestClient = retrofit.create(IApiCaller.class);
+        authRestClient = retrofit.create(WebCalls.class);
     }
 
 
 
     private static   void setupRestClientAuth(final String tokenType, final String token) {
-
-
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient httpClient = new OkHttpClient.Builder()
@@ -89,36 +87,27 @@ public class RestClient {
                 .build();
 
         Retrofit retrofit = new Retrofit.Builder().
-                baseUrl(Constants.BASE_URL).
+                baseUrl(NetworkConstants.BASE_URL).
                 addConverterFactory(GsonConverterFactory.create()).
                 client(httpClient).
                 build();
 
-        authRestClient = retrofit.create(IApiCaller.class);
+        authRestClient = retrofit.create(WebCalls.class);
     }
 
 
 
 
 
-    public static IApiCaller getAuthAdapter(){
+    public static WebCalls getAuthAdapter(){
         return authRestClient;
     }
 
-    public static IApiCaller getAuthAdapterToekn(String token){
-
-        String t=  Base64.encodeToString(token.getBytes(), Base64.DEFAULT);
-
+    public static WebCalls getAuthAdapterToekn(String token){
         RestClient.tokene=token;
-
-
-
-        Log.d(Constants.TAG, tokenType+ RestClient.tokene);
-
-
-
         return authRestClient;
     }
+
 
 
 }

@@ -27,10 +27,10 @@
                 android:layout_height="match_parent" />
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/txt_msg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center"
+                android:gravity="top"
                 android:text="@string/device_ID"
                 android:textColor="@android:color/holo_red_dark"
                 android:textSize="24sp" />

@@ -53,7 +53,7 @@ public class DeviceStorage {
         return true;
     }
 
-    public int GetUserEmail(){
+    public int GetVehicleID(){
         int restoredText = sharedPreferences.getInt("vid", 0);
         return restoredText;
     }

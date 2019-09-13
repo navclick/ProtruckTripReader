@@ -3,6 +3,7 @@ package com.example.naveed.protrucktripreader;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
@@ -16,9 +17,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
+import com.example.naveed.protrucktripreader.Abstract.GeneralCallBack;
+import com.example.naveed.protrucktripreader.BackGroundServices.LocationService;
 import com.example.naveed.protrucktripreader.Base.BaseActivity;
 import com.example.naveed.protrucktripreader.Helper.Constants;
+import com.example.naveed.protrucktripreader.Network.RestClient;
+import com.example.naveed.protrucktripreader.Responses.VehicleResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,6 +32,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,13 +52,14 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
     public  LatLng custLocation;
 
     public Marker MeMarker = null;
-
+    public TextView txtMsg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        txtMsg=(TextView) findViewById(R.id.txt_msg);
+        txtMsg.setText("Not Register. DeviceID:"+deviceId);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_gradient));
         GetPermissions();
@@ -61,8 +69,80 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
         }
 
 
-  public void setUpMap(){
+   public void setupAll(){
 
+        if(deviceStorage.GetDeviceID()==null || deviceStorage.GetVehicleID() <1){
+
+            getVehicleIfo();
+
+
+        }
+        else{
+
+            setUpMap();
+
+        }
+
+
+
+   }
+
+   public void getVehicleIfo(){
+
+
+       showProgress();
+       Log.d("test","intestFproduct");
+       RestClient.getAuthAdapter().getVehicleInfo(deviceId).enqueue(new GeneralCallBack<VehicleResponse>(this) {
+           @Override
+           public void onSuccess(VehicleResponse response) {
+
+               Gson gson = new Gson();
+               String Reslog= gson.toJson(response);
+               Log.d("test", Reslog);
+
+
+               if (!response.getIsError()) {
+
+                   deviceStorage.SetDeviceID(deviceId);
+                   deviceStorage.SetVehicleID(response.getValue().getId());
+                   deviceStorage.SetRegNum(response.getValue().getRegNumber());
+
+                   setUpMap();
+
+
+               }
+                else{
+
+                   showMessageDailog("MAP", response.getMessage());
+               }
+
+
+               hideProgress();
+
+
+
+           }
+
+           @Override
+           public void onFailure(Throwable throwable) {
+               //onFailure implementation would be in GeneralCallBack class
+               hideProgress();
+               Log.d("test","failed");
+
+           }
+
+
+
+       });
+
+
+
+
+   }
+
+  public void setUpMap(){
+      startService(new Intent(MainActivity.this, LocationService.class));
+txtMsg.setText(deviceStorage.GetRegNum());
       SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
               .findFragmentById(R.id.map);
       mapFragment.getMapAsync(this);
@@ -329,7 +409,7 @@ public void onClick(View view) {
 
         else{
 
-            setUpMap();
+            setupAll();
         }
     }
 
@@ -364,7 +444,7 @@ public void onClick(View view) {
 
                         ) {
                     // All Permissions Granted
-                    setUpMap();
+                    setupAll();
                     // setMapForV6();
 
                 } else {

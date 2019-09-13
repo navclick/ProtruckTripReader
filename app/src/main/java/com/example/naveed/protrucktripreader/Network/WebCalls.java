@@ -1,14 +1,28 @@
 package com.example.naveed.protrucktripreader.Network;
 
+import com.example.naveed.protrucktripreader.Request.SendTrackRequest;
+import com.example.naveed.protrucktripreader.Responses.SendTrackResponse;
+import com.example.naveed.protrucktripreader.Responses.VehicleResponse;
+
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Query;
 
-public interface IApiCaller {
-/*
+public interface WebCalls {
+
+    @GET(EndPoints.GET_VEHICLEINFO)
+    Call<VehicleResponse> getVehicleInfo(@Query("DeviceId") String DeviceId);
+
+    @POST(EndPoints.POST_SENDTRACK)
+    Call<SendTrackResponse> sendTrack(@Body SendTrackRequest order);
+
+
+
+    /*
     // Login starts
     @FormUrlEncoded
     @POST(EndPoints.LOGIN)
