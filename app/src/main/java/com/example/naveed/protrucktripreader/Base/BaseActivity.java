@@ -2,6 +2,7 @@ package com.example.naveed.protrucktripreader.Base;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
@@ -12,11 +13,11 @@ import com.example.naveed.protrucktripreader.R;
 public class BaseActivity extends AppCompatActivity {
 
     public DeviceStorage deviceStorage ;
-
+public static String deviceId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+deviceId= Settings.Secure.getString(this.getContentResolver(), Settings.Secure.ANDROID_ID);
         // Initializations
         deviceStorage = new DeviceStorage(this);
     }
