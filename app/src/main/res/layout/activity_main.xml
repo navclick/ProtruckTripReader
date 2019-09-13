@@ -15,14 +15,14 @@
         android:layout_weight="0.7"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+
+        <fragment
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:text="Map Container"
-            android:textSize="24sp" />
-    </LinearLayout>
+           />
+        </LinearLayout>
 
     <LinearLayout
         android:id="@+id/job_decsription"
