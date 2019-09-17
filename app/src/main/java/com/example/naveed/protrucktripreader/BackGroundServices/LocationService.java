@@ -118,18 +118,19 @@ public class LocationService extends Service implements LocationListener,GoogleA
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(Constants.TAG, "LOcation!!!!!!!!!!");
 
-        mLocationRequest = new LocationRequest();
+       /* mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(7000);
         mLocationRequest.setFastestInterval(0);
 
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-       /*
+       */
+
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(10000);
         mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setSmallestDisplacement(0);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-   */
+
    /* if (ContextCompat.checkSelfPermission(this,
             Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
