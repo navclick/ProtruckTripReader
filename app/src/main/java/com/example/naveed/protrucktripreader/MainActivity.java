@@ -3,15 +3,20 @@ package com.example.naveed.protrucktripreader;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
@@ -20,7 +25,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.Interpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.naveed.protrucktripreader.Abstract.GeneralCallBack;
 import com.example.naveed.protrucktripreader.BackGroundServices.LocationService;
@@ -31,6 +39,7 @@ import com.example.naveed.protrucktripreader.Responses.VehicleResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.Projection;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -41,6 +50,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.lang.Double.parseDouble;
 
 public class MainActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener {
     final private int  REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 200;
@@ -90,6 +101,27 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
 
    }
+
+
+    private BroadcastReceiver br = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Bundle bundle = intent.getExtras();
+            String lat =bundle.getString("lat");
+            String lng =bundle.getString("long");
+
+            LatLng Destination = new LatLng(24.8710754, 67.0834147);
+
+            animateMarker(MeMarker,Destination,true);
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Destination,zoomLevel));
+            Toast.makeText(getApplicationContext(), "From Service "+lat+"    "+lng,
+                    Toast.LENGTH_LONG).show();
+
+        }
+    };
+
 
    public void getVehicleIfo(){
 
@@ -144,7 +176,23 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
    }
 
-  public void setUpMap(){
+    @Override
+    protected void onResume() {
+        // TODO Auto-generated method stub
+        super.onResume();
+        registerReceiver(br, new IntentFilter("BroadcastLocation"));
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        // TODO Auto-generated method stub
+        super.onPause();
+        unregisterReceiver(br);
+    }
+
+    public void setUpMap(){
 
         if(!isMyServiceRunning(LocationService.class)) {
            // startService(new Intent(MainActivity.this, LocationService.class));
@@ -194,7 +242,45 @@ txtMsg.setText(deviceStorage.GetRegNum());
 
   }
 
-@Override
+    public void animateMarker(final Marker marker, final LatLng toPosition,
+                              final boolean hideMarker) {
+        final Handler handler = new Handler();
+        final long start = SystemClock.uptimeMillis();
+        Projection proj = mMap.getProjection();
+        Point startPoint = proj.toScreenLocation(marker.getPosition());
+        final LatLng startLatLng = proj.fromScreenLocation(startPoint);
+        final long duration = 500;
+
+        final Interpolator interpolator = new LinearInterpolator();
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                long elapsed = SystemClock.uptimeMillis() - start;
+                float t = interpolator.getInterpolation((float) elapsed
+                        / duration);
+                double lng = t * toPosition.longitude + (1 - t)
+                        * startLatLng.longitude;
+                double lat = t * toPosition.latitude + (1 - t)
+                        * startLatLng.latitude;
+                marker.setPosition(new LatLng(lat, lng));
+
+                if (t < 1.0) {
+                    // Post again 16ms later.
+                    handler.postDelayed(this, 16);
+                } else {
+                    if (hideMarker) {
+                        marker.setVisible(false);
+                    } else {
+                        marker.setVisible(true);
+                    }
+                }
+            }
+        });
+    }
+
+
+    @Override
 public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
@@ -214,12 +300,12 @@ public void onMapReady(GoogleMap googleMap) {
         }
 
         mMap.setMyLocationEnabled(true);
-
+    custLocation=HAMBURG;
         if(custLocation != null) {
         Log.d(Constants.TAG, "cusLoc" + String.valueOf(custLocation.latitude));
         //  mMap.animateCamera( CameraUpdateFactory.zoomTo( 17.0f ) );
 
-
+/*
         MarkerOptions markerOptions = new MarkerOptions();
 
         // Setting the position for the marker
@@ -249,6 +335,20 @@ public void onMapReady(GoogleMap googleMap) {
 
         mMap.addMarker(markerOptions).showInfoWindow();
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(HAMBURG, zoomLevel));
+*/
+
+
+            this.MeMarker = mMap.addMarker(new MarkerOptions()
+                    .position(custLocation)
+
+                    .title("You")
+
+                    .snippet("You")
+
+            );
+            this.MeMarker.showInfoWindow();
+             //mMap.addMarker(MeMarker.).showInfoWindow();
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(custLocation,zoomLevel));
 
         }
 

@@ -266,7 +266,12 @@ public void onConnected(@Nullable Bundle bundle) {
 
 
 
+        Intent intent = new Intent("BroadcastLocation");
+        intent.putExtra("lat",Lat);
+        intent.putExtra("long", Lng);
 
+
+        sendBroadcast(intent);
 
 
         Gson g = new Gson();
