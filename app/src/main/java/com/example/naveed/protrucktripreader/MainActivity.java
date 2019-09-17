@@ -2,6 +2,7 @@ package com.example.naveed.protrucktripreader;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,11 +13,13 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.example.naveed.protrucktripreader.Abstract.GeneralCallBack;
@@ -39,14 +42,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener, LocationListener {
+public class MainActivity extends BaseActivity implements OnMapReadyCallback, View.OnClickListener {
     final private int  REQUEST_CODE_ASK_MULTIPLE_PERMISSIONS = 200;
 
     static final LatLng HAMBURG = new LatLng(53.558, 9.927);
     static final LatLng KIEL = new LatLng(53.551, 9.993);
     private GoogleMap mMap;
-    protected LocationManager locationManager;
-    protected LocationListener locationListener;
+  //  protected LocationManager locationManager;
+//    protected LocationListener locationListener;
     protected Context context;
     float zoomLevel = (float) 15.0;
     public  LatLng custLocation;
@@ -58,6 +61,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         txtMsg=(TextView) findViewById(R.id.txt_msg);
         txtMsg.setText("Not Register. DeviceID:"+deviceId);
         ActionBar actionBar = getSupportActionBar();
@@ -141,12 +145,32 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
    }
 
   public void setUpMap(){
-      startService(new Intent(MainActivity.this, LocationService.class));
+
+        if(!isMyServiceRunning(LocationService.class)) {
+           // startService(new Intent(MainActivity.this, LocationService.class));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+              //  this.startForegroundService(new Intent(this, LocationService.class));
+               this.startForegroundService(new Intent(this, LocationService.class));
+
+            } else {
+                startService(new Intent(this, LocationService.class));
+            }
+
+
+
+
+
+
+        }
+      //Intent intent = new Intent(this, LocationService.class);
+      //startService(intent);
 txtMsg.setText(deviceStorage.GetRegNum());
       SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
               .findFragmentById(R.id.map);
       mapFragment.getMapAsync(this);
 
+      /*
       locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
       if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
           // TODO: Consider calling
@@ -164,7 +188,7 @@ txtMsg.setText(deviceStorage.GetRegNum());
       locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 10000, 0, this);
 
 
-
+*/
 
 
 
@@ -239,90 +263,16 @@ public void onStop(){
         super.onStop();
 
 
-        locationManager.removeUpdates(this);
-
-        }
-
-
-@Override
-public void onLocationChanged(Location location) {
-        //txtLat = (TextView) findViewById(R.id.textview1);
-        //txtLat.setText("Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-        Log.d(Constants.TAG,"Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude());
-
-        LatLng MyLocation = new LatLng(location.getLatitude(), location.getLongitude());
-
-        // Toast toast = Toast.makeText(getApplicationContext(),
-        //       "Latitude:" + location.getLatitude() + ", Longitude:" + location.getLongitude(),
-        //     Toast.LENGTH_SHORT);
-
-        //toast.show();
-
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(MyLocation));
-        try {
-        locationManager.removeUpdates(this);
-        }
-        catch (Exception e){
+        //locationManager.removeUpdates(this);
+    try {
+       //  locationManager.removeUpdates(this);
+    }
+    catch (Exception e){
 
 
-        }
+    }
 
 
-
-
-        /*
-       if (this.MeMarker == null) {
-
-
-
-
-            this.MeMarker = mMap.addMarker(new MarkerOptions()
-                    .position(MyLocation)
-
-                    .title("You")
-                    .icon(BitmapDescriptorFactory.fromBitmap(
-                            BitmapFactory.decodeResource(getResources(),
-                                    R.drawable.pin_rickshaw)))
-                    .snippet("You")
-
-            );
-            this.MeMarker.showInfoWindow();
-           // mMap.addMarker(MeMarker).showInfoWindow();
-            mMap.moveCamera(CameraUpdateFactory.newLatLng(MyLocation));
-
-
-        } else {
-           // Log.i("APITEST:", "set" + String.valueOf(rickshawLocation.latitude) + " " + String.valueOf(rickshawLocation.longitude));
-            this.MeMarker.setTitle("You");
-            this.MeMarker.setPosition(MyLocation);
-
-            this.MeMarker.setSnippet("You");
-            this.MeMarker.showInfoWindow();
-            this.animateMarker(this.MeMarker, MyLocation, false);
-
-        }
-
-
-*/
-
-
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(MyLocation,zoomLevel));
-        }
-
-
-@Override
-public void onProviderDisabled(String provider) {
-        Log.d("Latitude","disable");
-        }
-
-@Override
-public void onProviderEnabled(String provider) {
-        Log.d("Latitude","enable");
-        }
-
-@Override
-public void onStatusChanged(String provider, int status, Bundle extras) {
-        Log.d("Latitude","status");
         }
 
 
@@ -462,5 +412,15 @@ public void onClick(View view) {
         }
     }
 
-
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                Log.i ("isMyServiceRunning?", true+"");
+                return true;
+            }
+        }
+        Log.i ("isMyServiceRunning?", false+"");
+        return false;
+    }
 }

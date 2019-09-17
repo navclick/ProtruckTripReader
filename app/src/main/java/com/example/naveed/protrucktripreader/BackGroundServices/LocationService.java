@@ -1,16 +1,25 @@
 package com.example.naveed.protrucktripreader.BackGroundServices;
 
 import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothClass;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -21,6 +30,7 @@ import com.example.naveed.protrucktripreader.Helper.Constants;
 import com.example.naveed.protrucktripreader.Helper.DeviceStorage;
 import com.example.naveed.protrucktripreader.MainActivity;
 import com.example.naveed.protrucktripreader.Network.RestClient;
+import com.example.naveed.protrucktripreader.R;
 import com.example.naveed.protrucktripreader.Request.SendTrackRequest;
 import com.example.naveed.protrucktripreader.Responses.SendTrackResponse;
 import com.google.android.gms.common.ConnectionResult;
@@ -29,6 +39,9 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.example.naveed.protrucktripreader.Helper.ProgressLoader.hideProgress;
 
@@ -40,6 +53,10 @@ public class LocationService extends Service implements LocationListener,GoogleA
     GoogleApiClient mGoogleApiClient;
     Location mLastLocation;
     String lat, lon;
+    public int counter = 0;
+    public static final String NOTIFICATION_CHANNEL_ID = "channel_id";
+
+    Context context;
     public static String str_receiver = "servicetutorial.service.receiver";
 
     @Nullable
@@ -57,9 +74,37 @@ public class LocationService extends Service implements LocationListener,GoogleA
         tokenHelper = new DeviceStorage(this);
         buildGoogleApiClient();
         intent = new Intent(str_receiver);
+        String input ="test";
+        createNotificationChannel();
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this,
+                0, notificationIntent, 0);
+        Notification notification = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("Foreground Service")
+                .setContentText(input)
+                .setSmallIcon(R.drawable.ic_launcher_background)
+                .setContentIntent(pendingIntent)
+                .build();
+
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForeground(1, notification);
+        }
 
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    NOTIFICATION_CHANNEL_ID,
+                    "Foreground Service Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT
+            );
+
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
     synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -72,11 +117,19 @@ public class LocationService extends Service implements LocationListener,GoogleA
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(Constants.TAG, "LOcation!!!!!!!!!!");
+
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(20000);
-        mLocationRequest.setFastestInterval(20000);
+        mLocationRequest.setInterval(7000);
+        mLocationRequest.setFastestInterval(0);
+
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+       /*
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(10000);
+        mLocationRequest.setFastestInterval(10000);
         mLocationRequest.setSmallestDisplacement(0);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+   */
    /* if (ContextCompat.checkSelfPermission(this,
             Manifest.permission.ACCESS_FINE_LOCATION)
             == PackageManager.PERMISSION_GRANTED) {
@@ -125,7 +178,31 @@ public class LocationService extends Service implements LocationListener,GoogleA
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        return super.onStartCommand(intent, flags, startId);
+        super.onStartCommand(intent, flags, startId);
+        Toast.makeText(this, "service start", Toast.LENGTH_SHORT).show();
+        startTimer();
+
+        final Handler handler = new Handler();
+        Runnable runnable = new Runnable() {
+
+            @Override
+            public void run() {
+                try{
+                    Toast.makeText(getApplicationContext(), "service running", Toast.LENGTH_SHORT).show();
+                }
+                catch (Exception e) {
+                    // TODO: handle exception
+                }
+                finally{
+                    //also call the same runnable to call it at regular interval
+                    handler.postDelayed(this, 5000);
+                }
+            }
+        };
+
+//runnable must be execute once
+        handler.post(runnable);
+        return START_STICKY;
     }
 
 /*@Override
@@ -133,6 +210,17 @@ public void onConnected(@Nullable Bundle bundle) {
 
 }*/
 
+
+    @Override
+    public void onDestroy() {
+        Toast.makeText(this, "service destroy", Toast.LENGTH_SHORT).show();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            stopForeground(true); //true will remove notification
+        }
+        Intent broadcastIntent = new Intent("ac.in.ActivityRecognition.RestartSensor");
+        sendBroadcast(broadcastIntent);
+        stoptimertask();
+    }
     @Override
     public void onConnectionSuspended(int i) {
 
@@ -230,4 +318,34 @@ public void onConnected(@Nullable Bundle bundle) {
 
     }
 
+
+    private Timer timer;
+    private TimerTask timerTask;
+
+    public void startTimer() {
+        //set a new Timer
+        timer = new Timer();
+
+        //initialize the TimerTask's job
+        initializeTimerTask();
+
+        //schedule the timer, to wake up every 1 second
+        timer.schedule(timerTask, 1000, 1000); //
+    }
+
+    public void initializeTimerTask() {
+        timerTask = new TimerTask() {
+            public void run() {
+                Log.i("in timer", "in timer ++++  " + (counter++));
+            }
+        };
+    }
+
+    public void stoptimertask() {
+        //stop the timer, if it's not already null
+        if (timer != null) {
+            timer.cancel();
+            timer = null;
+        }
+    }
 }
