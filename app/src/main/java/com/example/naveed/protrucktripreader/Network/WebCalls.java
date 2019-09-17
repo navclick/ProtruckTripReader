@@ -1,6 +1,7 @@
 package com.example.naveed.protrucktripreader.Network;
 
 import com.example.naveed.protrucktripreader.Request.SendTrackRequest;
+import com.example.naveed.protrucktripreader.Responses.BiltyResponse;
 import com.example.naveed.protrucktripreader.Responses.SendTrackResponse;
 import com.example.naveed.protrucktripreader.Responses.VehicleResponse;
 
@@ -16,6 +17,9 @@ public interface WebCalls {
 
     @GET(EndPoints.GET_VEHICLEINFO)
     Call<VehicleResponse> getVehicleInfo(@Query("DeviceId") String DeviceId);
+    @GET(EndPoints.GET_VEHICLEBILTY)
+    Call<BiltyResponse> getVehicleBilty(@Query("vehicleId") String vehicleId);
+
 
     @POST(EndPoints.POST_SENDTRACK)
     Call<SendTrackResponse> sendTrack(@Body SendTrackRequest order);

@@ -35,6 +35,7 @@ import com.example.naveed.protrucktripreader.BackGroundServices.LocationService;
 import com.example.naveed.protrucktripreader.Base.BaseActivity;
 import com.example.naveed.protrucktripreader.Helper.Constants;
 import com.example.naveed.protrucktripreader.Network.RestClient;
+import com.example.naveed.protrucktripreader.Responses.BiltyResponse;
 import com.example.naveed.protrucktripreader.Responses.VehicleResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -114,13 +115,66 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
             LatLng Destination = new LatLng(24.8710754, 67.0834147);
 
-            animateMarker(MeMarker,Destination,true);
+           // animateMarker(MeMarker,Destination,true);
+
+            MeMarker.setPosition(new LatLng(Destination.latitude, Destination.longitude));
+
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(Destination,zoomLevel));
             Toast.makeText(getApplicationContext(), "From Service "+lat+"    "+lng,
                     Toast.LENGTH_LONG).show();
 
         }
     };
+
+
+    public void getVehicleBilty(){
+
+
+        showProgress();
+        Log.d("test","intestFproduct");
+        RestClient.getAuthAdapter().getVehicleBilty(String.valueOf(deviceStorage.GetVehicleID())).enqueue(new GeneralCallBack<BiltyResponse>(this) {
+            @Override
+            public void onSuccess(BiltyResponse response) {
+
+                Gson gson = new Gson();
+                String Reslog= gson.toJson(response);
+                Log.d("test", Reslog);
+
+
+                if (!response.getIsError()) {
+
+                    Bilty=response;
+
+
+                }
+                else{
+
+                    showMessageDailog("MAP", response.getMessage());
+                }
+
+
+                hideProgress();
+
+
+
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                //onFailure implementation would be in GeneralCallBack class
+                hideProgress();
+                Log.d("test","failed");
+
+            }
+
+
+
+        });
+
+
+
+
+    }
 
 
    public void getVehicleIfo(){

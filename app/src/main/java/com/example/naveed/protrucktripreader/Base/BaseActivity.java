@@ -12,12 +12,16 @@ import com.example.naveed.protrucktripreader.Helper.DeviceStorage;
 
 import com.example.naveed.protrucktripreader.Helper.ProgressLoader;
 import com.example.naveed.protrucktripreader.R;
+import com.example.naveed.protrucktripreader.Responses.BiltyResponse;
 
 public class BaseActivity extends AppCompatActivity {
 
     public DeviceStorage deviceStorage ;
 public static String deviceId;
     private ProgressLoader progressLoader;
+
+    public BiltyResponse Bilty;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

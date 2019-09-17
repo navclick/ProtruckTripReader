@@ -6,6 +6,7 @@ public class EndPoints {
 
 
     static final String GET_VEHICLEINFO=API_PREFIX+"driver/getvehicle";
+    static final String GET_VEHICLEBILTY=API_PREFIX+"driver/getvehiclebilty";
 
     static final String POST_SENDTRACK=API_PREFIX+"driver/addtrack";
 
