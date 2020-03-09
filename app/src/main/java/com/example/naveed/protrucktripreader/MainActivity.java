@@ -81,7 +81,7 @@ TextView txt_pickup_address;
         txtMsg=(TextView) findViewById(R.id.txt_msg);
         txtMsg.setText("Not Register. DeviceID:"+deviceId);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_gradient));
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.mipmap.toolbar_logo));
         GetPermissions();
         txt_destination_address=(TextView) findViewById(R.id.txt_destination_address);
         txt_pickup_address=(TextView) findViewById(R.id.txt_pickup_address);
