@@ -1,8 +1,10 @@
 package com.example.naveed.protrucktripreader.Network;
 
 import com.example.naveed.protrucktripreader.Request.SendTrackRequest;
+import com.example.naveed.protrucktripreader.Request.UpdatePodRequest;
 import com.example.naveed.protrucktripreader.Responses.BiltyResponse;
 import com.example.naveed.protrucktripreader.Responses.SendTrackResponse;
+import com.example.naveed.protrucktripreader.Responses.UpdatePodResponse;
 import com.example.naveed.protrucktripreader.Responses.VehicleResponse;
 
 import retrofit2.Call;
@@ -24,7 +26,8 @@ public interface WebCalls {
     @POST(EndPoints.POST_SENDTRACK)
     Call<SendTrackResponse> sendTrack(@Body SendTrackRequest order);
 
-
+    @POST(EndPoints.POST_UPDATEPOD)
+    Call<UpdatePodResponse> UpdatePod(@Body UpdatePodRequest pod);
 
     /*
     // Login starts

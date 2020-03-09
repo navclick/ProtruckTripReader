@@ -10,6 +10,8 @@ public class EndPoints {
 
     static final String POST_SENDTRACK=API_PREFIX+"driver/addtrack";
 
+    static final String POST_UPDATEPOD=API_PREFIX+"driver/updatepod";
+
 
 
 

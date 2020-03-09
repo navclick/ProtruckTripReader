@@ -126,8 +126,8 @@ public class LocationService extends Service implements LocationListener,GoogleA
        */
 
         mLocationRequest = new LocationRequest();
-        mLocationRequest.setInterval(10000);
-        mLocationRequest.setFastestInterval(10000);
+        mLocationRequest.setInterval(50000);
+        mLocationRequest.setFastestInterval(50000);
         mLocationRequest.setSmallestDisplacement(0);
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
@@ -182,7 +182,7 @@ public class LocationService extends Service implements LocationListener,GoogleA
         super.onStartCommand(intent, flags, startId);
         Toast.makeText(this, "service start", Toast.LENGTH_SHORT).show();
         startTimer();
-
+/*
         final Handler handler = new Handler();
         Runnable runnable = new Runnable() {
 
@@ -203,6 +203,7 @@ public class LocationService extends Service implements LocationListener,GoogleA
 
 //runnable must be execute once
         handler.post(runnable);
+*/
         return START_STICKY;
     }
 

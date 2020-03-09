@@ -1,6 +1,7 @@
 package com.example.naveed.protrucktripreader.Base;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
@@ -20,7 +21,7 @@ public class BaseActivity extends AppCompatActivity {
 public static String deviceId;
     private ProgressLoader progressLoader;
 
-    public BiltyResponse Bilty;
+    public static BiltyResponse Bilty;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +30,13 @@ deviceId= Settings.Secure.getString(this.getContentResolver(), Settings.Secure.A
         // Initializations
         deviceStorage = new DeviceStorage(this);
     }
+
+
+    public void OpenActivity(Class activity) {
+        startActivity(new Intent(this, activity));
+    }
+
+
 
     public void showProgress() {
         try {

@@ -27,6 +27,7 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Interpolator;
 import android.view.animation.LinearInterpolator;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,9 +66,12 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
     protected Context context;
     float zoomLevel = (float) 15.0;
     public  LatLng custLocation;
-
+TextView txt_destination_address;
+TextView txt_pickup_address;
     public Marker MeMarker = null;
+    public Marker MDestination = null;
     public TextView txtMsg;
+    Button btn_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,9 +83,10 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
         ActionBar actionBar = getSupportActionBar();
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.drawable.ab_gradient));
         GetPermissions();
-
-
-
+        txt_destination_address=(TextView) findViewById(R.id.txt_destination_address);
+        txt_pickup_address=(TextView) findViewById(R.id.txt_pickup_address);
+         btn_status=(Button) findViewById(R.id.btn_status);
+         btn_status.setOnClickListener(this);
         }
 
 
@@ -145,7 +150,36 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
                     Bilty=response;
 
+                    if(Bilty.getValue().size() >0) {
+                        txt_destination_address.setText(Bilty.getValue().get(0).getAddress());
 
+                       LatLng destinationLatLng= getLocationFromAddress(getApplicationContext(),Bilty.getValue().get(0).getAddress());
+
+                        if(destinationLatLng != null) {
+                            MDestination = mMap.addMarker(new MarkerOptions()
+                                    .position(destinationLatLng)
+
+                                    .title(Bilty.getValue().get(0).getPartyName())
+
+                                    .snippet(Bilty.getValue().get(0).getPartyName())
+
+                            );
+                            MDestination.showInfoWindow();
+                            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(destinationLatLng,zoomLevel));
+                        }
+
+                        else{
+
+
+                            Log.d(Constants.TAG,"Destination lat lng null!");
+                        }
+                    }
+
+                    else{
+
+                        showMessageDailog("TripReader", "No Bilty Assigned!");
+
+                    }
                 }
                 else{
 
@@ -175,6 +209,7 @@ public class MainActivity extends BaseActivity implements OnMapReadyCallback, Vi
 
 
     }
+
 
 
    public void getVehicleIfo(){
@@ -407,7 +442,7 @@ public void onMapReady(GoogleMap googleMap) {
         }
 
 
-
+        getVehicleBilty();
 
         }
 
@@ -433,8 +468,16 @@ public void onStop(){
 @Override
 public void onClick(View view) {
         switch (view.getId()) {
-        case R.id.map:
+        case R.id.btn_status:
+        if(Bilty.getValue().size()<1){
 
+            showMessageDailog("TripReader","No Current Bilty!");
+
+        }
+        else{
+        OpenActivity(BiltyStatusActivity.class);
+
+        }
 
 
         break;
@@ -468,6 +511,7 @@ public void onClick(View view) {
         } catch (Exception ex) {
 
             ex.printStackTrace();
+            return null;
         }
 
         return p1;
@@ -477,7 +521,7 @@ public void onClick(View view) {
     @TargetApi(Build.VERSION_CODES.M)
     private void GetPermissions(){
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)  {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED  || ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)  {
 
             if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.LOLLIPOP){
                 List<String> permissionsNeeded = new ArrayList<String>();
@@ -488,7 +532,13 @@ public void onClick(View view) {
                 if (!addPermission(permissionsList, Manifest.permission.ACCESS_COARSE_LOCATION))
                     permissionsNeeded.add("Location");
 
+                if (!addPermission(permissionsList, Manifest.permission.CAMERA))
+                    permissionsNeeded.add("Camera");
 
+                if (!addPermission(permissionsList, Manifest.permission.WRITE_EXTERNAL_STORAGE))
+                    permissionsNeeded.add("Write_External_Storage");
+                if (!addPermission(permissionsList, Manifest.permission.READ_EXTERNAL_STORAGE))
+                    permissionsNeeded.add("Read_External_Storage");
 
 
                 if (permissionsList.size() > 0) {
@@ -544,6 +594,9 @@ public void onClick(View view) {
                 // Check for ACCESS_FINE_LOCATION
                 if (perms.get(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                         && perms.get(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+                        && perms.get(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
 
                         ) {
