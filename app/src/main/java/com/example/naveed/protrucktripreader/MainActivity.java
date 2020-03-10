@@ -81,6 +81,7 @@ TextView txt_pickup_address;
         txtMsg=(TextView) findViewById(R.id.txt_msg);
         txtMsg.setText("Not Register. DeviceID:"+deviceId);
         ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
         actionBar.setBackgroundDrawable(getResources().getDrawable(R.mipmap.toolbar_logo));
         GetPermissions();
         txt_destination_address=(TextView) findViewById(R.id.txt_destination_address);
@@ -471,8 +472,8 @@ public void onClick(View view) {
         case R.id.btn_status:
         if(Bilty.getValue().size()<1){
 
-            showMessageDailog("TripReader","No Current Bilty!");
-
+           // showMessageDailog("TripReader","No Current Bilty!");
+            OpenActivity(BiltyStatusActivity.class);
         }
         else{
         OpenActivity(BiltyStatusActivity.class);

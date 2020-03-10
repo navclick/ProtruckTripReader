@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:weightSum="1"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -53,7 +52,7 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/btn_status"
+                    android:id="@+id/btn_status1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
@@ -97,7 +96,7 @@
                     android:padding="10dp">
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/textView20"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -123,7 +122,7 @@
                     android:padding="10dp">
 
                     <TextView
-                        android:id="@+id/textView24"
+                        android:id="@+id/textView240"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
@@ -132,7 +131,7 @@
                         android:textSize="10sp" />
 
                     <TextView
-                        android:id="@+id/textView34"
+                        android:id="@+id/textView340"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="27-09-2019     10:00 AM"
@@ -230,50 +229,215 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/delivery_chalan_cont"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/from_add_container"
-        android:layout_marginBottom="10dp"
-        android:gravity="center">
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/from_add_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/bilty_scan_btn"
-        android:layout_marginBottom="10dp"
-        android:gravity="center">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"></LinearLayout>
-    </RelativeLayout>
-
-    <RelativeLayout
         android:id="@+id/bilty_scan_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/map_frag"
-        android:layout_marginBottom="10dp"
-        android:gravity="center">
+        android:layout_alignParentBottom="true">
+
+        <ImageButton
+            android:id="@+id/navi_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/delivery_challan_no"
+            android:layout_alignLeft="@+id/delivery_challan_no"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="10dp"
+            android:background="@drawable/round_btn_red"
+            android:elevation="5dp"
+            android:rotation="-45"
+            android:src="@android:drawable/ic_menu_send"
+            android:tint="#fff" />
+
+        <ImageButton
+            android:id="@+id/call_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/delivery_challan_no"
+            android:layout_alignRight="@+id/delivery_challan_no"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/round_btn"
+            android:elevation="5dp"
+            android:rotation="160"
+            android:tint="#fff"
+            app:srcCompat="@android:drawable/ic_menu_call" />
+
+        <LinearLayout
+            android:id="@+id/delivery_challan_no"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/add_row"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/round_corner"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/textView030"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Delivery Challan Number"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="ڈلیوری چالان نمبر"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/textView02"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="80014537"
+                    android:textColor="#3F3F3F"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/add_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/btn_status"
+            android:layout_alignParentTop="false"
+            android:layout_marginBottom="10dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginStart="20dp"
+            android:background="@drawable/round_corner"
+            android:elevation="5dp"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/textView03"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="0.5"
+                    android:text="From Karachi To"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/textView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:layout_weight="0.5"
+                    android:text="از کراچی تا"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="12sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="Rawalpindi"
+                    android:textColor="#3F3F3F"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textView0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:text="راولپنڈی"
+                    android:textColor="#3F3F3F"
+                    android:textSize="18sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_status"
             android:layout_width="match_parent"
-            android:layout_height="35dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
             android:layout_marginEnd="50dp"
             android:layout_marginStart="50dp"
-            android:background="@color/colorPrimary"
+            android:background="@drawable/round_corner_btn"
+            android:elevation="5dp"
+            android:paddingBottom="0dp"
             android:paddingEnd="30dp"
             android:paddingStart="30dp"
             android:text="بلٹی اسکین کریں "
             android:textColor="#fff"
-            android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:translationY="-10dp" />
+
+        <ImageView
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_above="@+id/filler"
+            android:layout_alignParentBottom="false"
+            app:srcCompat="@drawable/ab_gradient" />
+
+        <LinearLayout
+            android:id="@+id/filler"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:layout_alignParentBottom="true"
+            android:background="#fff"
+            android:orientation="vertical"></LinearLayout>
+
     </RelativeLayout>
 
 

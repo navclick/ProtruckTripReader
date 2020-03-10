@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name"></string>
+    <string name="app_name">Protruck Trip Reader</string>
     <string name="device_ID">Registration Failed\nDevice ID 123456789</string>
 </resources>
