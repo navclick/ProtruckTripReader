@@ -236,31 +236,29 @@
 
         <ImageButton
             android:id="@+id/navi_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@+id/delivery_challan_no"
             android:layout_alignLeft="@+id/delivery_challan_no"
             android:layout_marginBottom="5dp"
             android:layout_marginLeft="10dp"
             android:background="@drawable/round_btn_red"
             android:elevation="5dp"
-            android:rotation="-45"
-            android:src="@android:drawable/ic_menu_send"
+            android:src="@mipmap/navigation"
             android:tint="#fff" />
 
         <ImageButton
             android:id="@+id/call_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_above="@+id/delivery_challan_no"
             android:layout_alignRight="@+id/delivery_challan_no"
             android:layout_marginBottom="5dp"
             android:layout_marginRight="10dp"
             android:background="@drawable/round_btn"
             android:elevation="5dp"
-            android:rotation="160"
-            android:tint="#fff"
-            app:srcCompat="@android:drawable/ic_menu_call" />
+            android:padding="10dp"
+            android:src="@mipmap/phone" />
 
         <LinearLayout
             android:id="@+id/delivery_challan_no"

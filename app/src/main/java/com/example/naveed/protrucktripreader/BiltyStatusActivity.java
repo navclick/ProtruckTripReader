@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.annotation.RequiresApi;
 import android.util.Base64;
 import android.util.Log;
@@ -48,6 +49,9 @@ public class BiltyStatusActivity extends BaseActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bilty_status);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(false);
+        actionBar.setBackgroundDrawable(getResources().getDrawable(R.mipmap.toolbar_logo));
         imageView =(ImageView) findViewById(R.id.img_pod);
         photoButton = (Button) findViewById(R.id.btn_take_pic);
         btn_submit=(Button) findViewById(R.id.btn_submit);
